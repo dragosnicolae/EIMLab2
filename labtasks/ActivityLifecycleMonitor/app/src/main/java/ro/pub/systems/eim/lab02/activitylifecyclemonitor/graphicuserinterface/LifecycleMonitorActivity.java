@@ -1,12 +1,13 @@
 package ro.pub.systems.eim.lab02.activitylifecyclemonitor.graphicuserinterface;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -14,7 +15,7 @@ import ro.pub.systems.eim.lab02.activitylifecyclemonitor.R;
 import ro.pub.systems.eim.lab02.activitylifecyclemonitor.general.Constants;
 import ro.pub.systems.eim.lab02.activitylifecyclemonitor.general.Utilities;
 
-public class LifecycleMonitorActivity extends AppCompatActivity {
+public class LifecycleMonitorActivity extends Activity {
 
     private ButtonClickListener buttonClickListener = new ButtonClickListener();
 
@@ -61,8 +62,71 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
         okButton.setOnClickListener(buttonClickListener);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
-
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        if (savedInstanceState == null)
+            Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        else
+            Log.d(Constants.TAG, "onCreate() method was invoked with a previous state");
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(Constants.TAG, "onRestart");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(Constants.TAG, "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(Constants.TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(Constants.TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(Constants.TAG, "onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constants.TAG, "onDestroy");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        CheckBox remeberMe = (CheckBox) findViewById(R.id.remember_me_checkbox);
+        if (remeberMe.isChecked()) {
+            EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+            EditText passwordEsitText = (EditText)findViewById(R.id.password_edit_text);
+
+            outState.putString(Constants.USERNAME_EDIT_TEXT, usernameEditText.getText().toString());
+            outState.putString(Constants.PASSWORD_EDIT_TEXT, passwordEsitText.getText().toString());
+            outState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, true);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+            CheckBox remeberMe = (CheckBox) findViewById(R.id.remember_me_checkbox);
+            EditText usernameEditText = (EditText) findViewById(R.id.username_edit_text);
+            EditText passwordEsitText = (EditText) findViewById(R.id.password_edit_text);
+
+            remeberMe.setChecked(savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX));
+            usernameEditText.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT));
+            passwordEsitText.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT));
+        }
+    }
 }
